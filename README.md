@@ -1,369 +1,192 @@
-<div align="center">
+<p align="center">
+  <img src="app/src/main/res/drawable-nodpi/sam_logo_transparent.png" alt="Sam's Progress Tracker Logo" width="120" />
+</p>
 
-# Sam's Progress Tracker
-### LiquidGlassStudy Updated · Premium Study Companion
+<h1 align="center">Sam's Progress Tracker</h1>
+<p align="center">
+  <b>LiquidGlassStudy — Premium Kotlin Study Tracker</b><br/>
+  A native Android study tracker built with <b>Kotlin</b>, <b>Jetpack Compose</b>, <b>Material 3</b>, and <b>Supabase</b>.
+</p>
 
-A polished **native Kotlin Android app** for tracking study performance, mock tests, revision, video learning, mistakes, submissions, and progress analytics — built with **Jetpack Compose**, **Material 3**, and **Supabase**.
-
-<br/>
-
-![Platform](https://img.shields.io/badge/Platform-Android-green?style=for-the-badge)
-![Language](https://img.shields.io/badge/Language-Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
-![UI](https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white)
-![Design](https://img.shields.io/badge/Design-Material%203-0F9D58?style=for-the-badge)
-![Backend](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Private%20Single--User-orange?style=for-the-badge)
-
-</div>
-
----
-
-## Overview
-
-**Sam's Progress Tracker** is a premium **study companion Android app** designed to help you manage and improve your learning workflow.
-
-It supports:
-
-- mock tests and test performance
-- revision tracking
-- video progress logging
-- reading/newspaper logs
-- mistake review and correction workflow
-- submitted activity history
-- progress analytics
-- daily study missions
-- polished premium UI with liquid-glass styling
-
-This project is built as a **fully native Android app** using **Kotlin + Jetpack Compose**, and it keeps the existing **Supabase integration** for live study data.
+<p align="center">
+  <img src="https://img.shields.io/badge/Platform-Android-brightgreen?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Kotlin-Native-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white" />
+  <img src="https://img.shields.io/badge/Jetpack-Compose-4285F4?style=for-the-badge&logo=jetpackcompose&logoColor=white" />
+  <img src="https://img.shields.io/badge/Material-3-6200EE?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Backend-Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white" />
+</p>
 
 ---
 
-## Why this app?
+## ✨ Overview
 
-This app is made for serious self-study and exam preparation.
+**Sam's Progress Tracker** is a native Android app designed as a **strict, smart, and scalable personal study system**.
 
-It is designed to answer questions like:
+It helps track:
 
-- What did I study today?
-- Which mock tests did I submit?
-- Where am I making mistakes?
-- Which weak topics need revision?
-- How much progress am I making overall?
-- What should I study next?
+- mock tests and attempts
+- video learning progress
+- revision work
+- reading sessions
+- mistakes and weak areas
+- daily study tasks
+- analytics and progress trends
+
+The app is designed to feel:
+
+- **smart**
+- **accurate**
+- **strict**
+- **easy to use**
+- **scalable**
+- **professionally structured**
+
+The goal is simple:
+
+> Ask only the right questions, store the right data, and make every submission visible and useful later.
 
 ---
 
-## Key Features
+## 🚀 Key Highlights
 
-### Study Dashboard
-- Focus score
-- Next best action
-- Recent result card
-- Weak topic highlight
-- Study timeline
-- Quick add actions
+- Native **Kotlin Android app**
+- Built with **Jetpack Compose**
+- **Material 3** UI with premium liquid-glass inspired visuals
+- **Supabase** authentication + database integration
+- **Recent Activity** with submitted-detail visibility
+- **Mistake Book** with linked submission context
+- **Smart Add** workflow
+- **Progress analytics**, charts, and breakdowns
+- Local storage + sync-friendly data flow
+- Clean architecture using models, repositories, view model, and UI layers
 
-### Today Screen
-- Daily study mission view
-- Goal-based task flow
-- Local-only fallback missions
-- Better day planning for focused study
+---
 
-### Study Screen
-- Add mock/test, revision, reading, or video
-- Search and filter study items
-- Recently used items
-- Favorite items
-- Premium reusable catalog cards
+## 🧭 Main Navigation
 
-### Mistake Book
-- Tracks missed questions
-- Review states:
+The app is organized into 5 core tabs:
+
+### 1. Home
+Your study command center.
+
+Includes:
+- focus score
+- next best action
+- quick actions
+- recent result snapshot
+- weak topic highlight
+- timeline / quick overview
+
+### 2. Today
+Your daily study dashboard.
+
+Includes:
+- daily mission/task view
+- today's active tasks
+- checkboxes and completion workflow
+- daily progress snapshot
+- submit/update daily progress
+
+### 3. Study
+The structured study management section.
+
+Includes:
+- activity type cards
+- catalog/source selection
+- smart add flow
+- search and filters
+- recently used items
+- favorite study items
+- strict category-based submission forms
+
+### 4. Mistakes
+Your mistake review system.
+
+Includes:
+- mistake records
+- linked source test/submission info
+- review states like:
   - New
   - Reviewing
   - Fixed
-- Submitted activities shown at the top
-- Mistake review flow for better correction
+- mistake details and context
 
-### Progress Analytics
-- Type-wise visual analytics
-- Donut / pie-style activity distribution
-- Type filters:
-  - All
-  - Mock-Test
-  - Video
-  - Revision
-  - Reading
-- Type-specific recent bar charts
-- Mock accuracy and mistake trends
+### 5. Progress
+Your visual analytics dashboard.
 
-### Smart Add System
-The `+` button is now a **two-stage smart add flow**.
+Includes:
+- performance summaries
+- type-wise analytics
+- charts
+- progress indicators
+- study distribution data
 
-#### Stage 1
-Choose activity type:
-- Mock/Test
+---
+
+## 🧠 Smart Add System
+
+One of the key parts of this app is the **Smart Add** flow.
+
+Instead of using one generic form for everything, the app understands what the user is adding and asks only the required fields.
+
+### Home / Today `+`
+The add button works like a **daily quick action launcher**.
+
+Examples:
+- Add study session
+- Review mistakes
+- Add revision
+- Add mock attempt
+- Add video progress
+- Add reading progress
+- Add quick note
+
+### Study `+`
+The add button works like a **structured study entry system**.
+
+Examples:
+- Mock / Test
 - Video
 - Revision
 - Reading
-- Mistake Review
-- Timer
+- Practice / PYQ
+- Custom / category-based item
 
-#### Stage 2
-For Mock/Test, Video, Revision, or Reading:
-- log progress for an **existing source/category**
-- or create a **new reusable source/category**
-
-This makes the app faster, more organized, and more scalable.
+Each flow can ask category-specific information, so the user never gets useless fields.
 
 ---
 
-## Screenshots
+## 📊 Analytics & Tracking
 
-> Add your screenshots inside a `screenshots/` folder in the root of the repository using the filenames shown below.
+The app is designed to turn raw study activity into meaningful progress insights.
 
-### App Preview
+Possible insights include:
 
-<table>
-  <tr>
-    <td align="center"><b>1. Home</b></td>
-    <td align="center"><b>2. Today</b></td>
-    <td align="center"><b>3. Study</b></td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/1-home.png" width="220"/></td>
-    <td><img src="screenshots/2-today.png" width="220"/></td>
-    <td><img src="screenshots/3-study.png" width="220"/></td>
-  </tr>
-
-  <tr>
-    <td align="center"><b>4. Mistakes</b></td>
-    <td align="center"><b>5. Progress</b></td>
-    <td align="center"><b>6. How to Submit</b></td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/4-mistakes.png" width="220"/></td>
-    <td><img src="screenshots/5-progress.png" width="220"/></td>
-    <td><img src="screenshots/6-how-to-submit.png" width="220"/></td>
-  </tr>
-
-  <tr>
-    <td align="center"><b>7. What Submitted</b></td>
-    <td align="center"><b>8. User Detail</b></td>
-    <td align="center"><b>9. Checkbox</b></td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/7-what-submitted.png" width="220"/></td>
-    <td><img src="screenshots/8-user-detail.png" width="220"/></td>
-    <td><img src="screenshots/9-checkbox.png" width="220"/></td>
-  </tr>
-</table>
+- mock score trend
+- accuracy trend
+- study-time trend
+- activity distribution
+- correct vs wrong vs skipped breakdown
+- mistake reason distribution
+- subject-wise performance
+- video progress
+- revision progress
 
 ---
 
-## Premium UI Highlights
+## 🗂️ Screenshots
 
-This build improves the visual quality of the app with:
+> Place your screenshots inside a `screenshots/` folder in the project root using the exact file names below.
 
-- static liquid-glass inspired background
-- glass-like premium cards and surfaces
-- floating glass bottom navigation
-- animated selected tab states
-- smooth fade and slide transitions
-- spring press animations
-- premium add-activity bottom sheet
-- timer mini-player
-- animated progress bars and charts
-- polished card hierarchy and spacing
-
----
-
-## Submitted Detail Improvements
-
-This version also improves result visibility:
-
-- Recent Activity items are tappable
-- Full Submitted Detail sheet is shown
-- Exact saved fields are visible for:
-  - revision
-  - test
-  - video
-  - reading
-- Test detail also shows the **missed questions** linked to that exact attempt
-
-This makes the submission history much more useful and transparent.
-
----
-
-## Version Highlights
-
-## v1.4 – Strict Personal Mode
-This update adds:
-
-- personal single-user REST mode for the Study project
-- better sync clarity
-- stricter catalog creation rules
-- danger zone delete confirmation
-- manual refresh behavior improvements
-- study state refresh after save
-- extra SQL patch:
-  - `supabase/study_tracker_v1_4_personal_admin_patch.sql`
-
-### v1.4 behavior updates
-- Study REST reads/writes use your configured personal Study project keys
-- Smart Add can create `platforms` and `study_items` even if normal RLS blocks it
-- Deletion is safer:
-  - Study delete requires typing `DELETE STUDY DATA`
-  - Daily delete requires typing `CLEAR DAILY HISTORY`
-
----
-
-## v1.3 – Smart Add Upgrade
-Major Smart Add improvements:
-
-- Two-step add flow
-- Existing sources prioritized by favorites and recent usage
-- Better category-specific creation fields
-- Immediate jump into the correct submission form after source creation
-
-### Category-specific setup examples
-
-#### Video
-- platform/class app
-- course/subject
-- batch/playlist/chapter
-- video series/topic
-- teacher/channel
-- total videos
-- videos per day
-
-#### Mock/Test
-- platform/source
-- main test category
-- section/bundle/topic
-- test name
-- source/creator
-- total questions
-- mocks per day
-
-#### Revision / Reading
-- source/category/item
-- target count
-- daily target
-- custom rules
-
----
-
-## v1.2 – Result Visibility + Add Flow
-This version added:
-
-- Submitted Detail sheet
-- More useful Mistake Book structure
-- contextual floating action button behavior
-- better entry visibility for recent activities
-- catalog item creation based on the existing data model
-
----
-
-## Database / Supabase Model
-
-This app continues using the existing professional schema.
-
-### Study module tables
-- `platforms`
-- `study_items`
-- `form_templates`
-- `form_template_fields`
-- `activity_sessions`
-- `revision_entries`
-- `test_attempts`
-- `missed_questions`
-- `video_entries`
-- `reading_entries`
-- `v_study_item_catalog`
-
-### Daily module tables
-- `tasks`
-- `daily_status`
-- `activity_log`
-
-### Important note
-The app **does not create random physical SQL tables from the phone**.
-
-That is intentional.
-
-Custom study categories are represented using:
-- catalog rows
-- templates
-- UI rules
-
-while daily submissions are stored in the proper fixed entry tables.
-
-This keeps the architecture cleaner and more maintainable.
-
----
-
-## Supabase Projects
-
-| Module | Supabase Project |
-|---|---|
-| Daily Goal Tracker | `efdgpvqnniijfgtprudw` |
-| Study Pulse Pro | `bcljjhoazecxiqrllbkx` |
-
----
-
-## Included SQL Files
-
-This project includes SQL support files for setup and patching.
-
-### Included files
-- `supabase/study_tracker_install.sql`
-- `supabase/study_tracker_custom_catalog_patch.sql`
-- `supabase/study_tracker_v1_4_personal_admin_patch.sql`
-
-### When to use them
-Use the patch files if:
-
-- catalog creation fails
-- there is a permission / RLS issue
-- new study item creation is blocked
-
----
-
-## Build Requirements
-
-Open the project in **Android Studio** and let Gradle sync.
-
-### Required versions
-- Android Gradle Plugin **9.0.1**
-- Gradle Wrapper **9.1.0**
-- Kotlin Compose Plugin **2.3.20**
-- compileSdk **36**
-
-If Android Studio asks to install SDK 36 or build tools, install them through the **SDK Manager**.
-
----
-
-## Tech Stack
-
-- **Kotlin**
-- **Jetpack Compose**
-- **Material 3**
-- **Supabase**
-- **Coroutines**
-- **Navigation**
-- **Modern Android Architecture**
-
----
-
-## Project Structure
+Recommended file names:
 
 ```text
-app/
-gradle/
-supabase_reference/
-apk file/
-build.gradle.kts
-settings.gradle.kts
-gradle.properties
-local.properties.example
+screenshots/01-home.png
+screenshots/02-today.png
+screenshots/03-study.png
+screenshots/04-mistakes.png
+screenshots/05-progress.png
+screenshots/06-how-to-submit.png
+screenshots/07-what-submitted.png
+screenshots/08-user-detail.png
+screenshots/09-checkbox.png
