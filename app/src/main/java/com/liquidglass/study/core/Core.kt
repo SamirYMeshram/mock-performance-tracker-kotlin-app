@@ -1,0 +1,429 @@
+package com.liquidglass.study.core
+
+import android.content.Context
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.doubleOrNull
+import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.longOrNull
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import java.time.Instant
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.concurrent.TimeUnit
+
+data class SupabaseProjectConfig(
+    val moduleKey: String,
+    val appName: String,
+    val projectId: String,
+    val baseUrl: String,
+    val anonKey: String,
+    val source: String,
+    val publishableKey: String? = null,
+    val serviceRoleKey: String? = null
+)
+
+object SupabaseProjects {
+    val Daily = SupabaseProjectConfig(
+        moduleKey = "Daily",
+        appName = "Daily Goal Tracker",
+        projectId = "bcljjhoazecxiqrllbkx",
+        baseUrl = "https://bcljjhoazecxiqrllbkx.supabase.co",
+        anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjbGpqaG9hemVjeGlxcmxsYmt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3Njg5NDksImV4cCI6MjA5MjM0NDk0OX0.Bwb3VYqY2_WPRaJeRxgujmQQ9BB7vW7i7goHcOzfrdY",
+        source = "projects/daily-goal-tracker/config.js"
+    )
+
+    val Study = SupabaseProjectConfig(
+        moduleKey = "Study",
+        appName = "Study Pulse Pro",
+        projectId = "bcljjhoazecxiqrllbkx",
+        baseUrl = "https://bcljjhoazecxiqrllbkx.supabase.co",
+        anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjbGpqaG9hemVjeGlxcmxsYmt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3Njg5NDksImV4cCI6MjA5MjM0NDk0OX0.Bwb3VYqY2_WPRaJeRxgujmQQ9BB7vW7i7goHcOzfrdY",
+        source = "projects/Mock-Performance-Tracker/assets/js/config.js",
+        publishableKey = "sb_publishable_mgXuAxdSad-QnJTewuyVDA_Q_lhV06B",
+        serviceRoleKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJjbGpqaG9hemVjeGlxcmxsYmt4Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3Njc2ODk0OSwiZXhwIjoyMDkyMzQ0OTQ5fQ.OfxkrGjg1UiDDOPDVPgFTS2oQqMUTHLRFKRsMF1svJc"
+    )
+
+    fun forModuleKey(moduleKey: String): SupabaseProjectConfig = when (moduleKey) {
+        "Study" -> Study
+        else -> Daily
+    }
+}
+
+data class AuthUser(
+    val id: String,
+    val email: String?
+)
+
+data class AuthUserDto(
+    val id: String,
+    val email: String? = null
+) {
+    fun toDomain(): AuthUser = AuthUser(id = id, email = email)
+}
+
+data class AuthSessionResponse(
+    val accessToken: String,
+    val refreshToken: String? = null,
+    val expiresIn: Long? = null,
+    val tokenType: String? = null,
+    val user: AuthUserDto? = null
+)
+
+class SupabaseException(message: String, val statusCode: Int? = null) : Exception(message)
+
+class SessionStore(context: Context, namespace: String) {
+    private val prefs = context.applicationContext.getSharedPreferences("liquid_glass_session_$namespace", Context.MODE_PRIVATE)
+    private val globalPrefs = context.applicationContext.getSharedPreferences("liquid_glass_global", Context.MODE_PRIVATE)
+
+    var accessToken: String?
+        get() = prefs.getString(KEY_ACCESS_TOKEN, null)
+        private set(value) = prefs.edit().putString(KEY_ACCESS_TOKEN, value).apply()
+
+    var refreshToken: String?
+        get() = prefs.getString(KEY_REFRESH_TOKEN, null)
+        private set(value) = prefs.edit().putString(KEY_REFRESH_TOKEN, value).apply()
+
+    val userId: String?
+        get() = prefs.getString(KEY_USER_ID, null)
+
+    val userEmail: String?
+        get() = prefs.getString(KEY_USER_EMAIL, null)
+
+    fun saveSession(session: AuthSessionResponse) {
+        val expiresAt = Instant.now().epochSecond + (session.expiresIn ?: 3600L)
+        prefs.edit()
+            .putString(KEY_ACCESS_TOKEN, session.accessToken)
+            .putString(KEY_REFRESH_TOKEN, session.refreshToken)
+            .putLong(KEY_EXPIRES_AT, expiresAt)
+            .apply()
+        session.user?.let { saveUser(it.toDomain()) }
+    }
+
+    fun saveUser(user: AuthUser) {
+        prefs.edit()
+            .putString(KEY_USER_ID, user.id)
+            .putString(KEY_USER_EMAIL, user.email)
+            .apply()
+    }
+
+    fun currentUser(): AuthUser? {
+        val id = userId ?: return null
+        return AuthUser(id = id, email = userEmail)
+    }
+
+    fun shouldRefresh(): Boolean {
+        val expiresAt = prefs.getLong(KEY_EXPIRES_AT, 0L)
+        if (expiresAt <= 0L) return false
+        return Instant.now().epochSecond >= expiresAt - 90L
+    }
+
+    fun clearSession() {
+        prefs.edit()
+            .remove(KEY_ACCESS_TOKEN)
+            .remove(KEY_REFRESH_TOKEN)
+            .remove(KEY_EXPIRES_AT)
+            .remove(KEY_USER_ID)
+            .remove(KEY_USER_EMAIL)
+            .apply()
+    }
+
+    fun selectedModuleName(): String = globalPrefs.getString(KEY_SELECTED_MODULE, "Study") ?: "Daily"
+
+    fun saveSelectedModule(moduleName: String) {
+        globalPrefs.edit().putString(KEY_SELECTED_MODULE, moduleName).apply()
+    }
+
+    fun loadDailyDraft(day: String): Map<String, Boolean> {
+        val raw = prefs.getString("dgt_supabase_draft_$day", null) ?: return emptyMap()
+        return runCatching {
+            val obj = Json.parseToJsonElement(raw).jsonObject
+            obj.mapValues { it.value.jsonPrimitive.booleanOrNull ?: false }
+        }.getOrDefault(emptyMap())
+    }
+
+    fun saveDailyDraft(day: String, map: Map<String, Boolean>) {
+        val obj = JsonObject(map.mapValues { JsonPrimitive(it.value) })
+        prefs.edit().putString("dgt_supabase_draft_$day", obj.toString()).apply()
+    }
+
+    fun clearDailyDraft(day: String) {
+        prefs.edit().remove("dgt_supabase_draft_$day").apply()
+    }
+
+    private companion object {
+        const val KEY_ACCESS_TOKEN = "access_token"
+        const val KEY_REFRESH_TOKEN = "refresh_token"
+        const val KEY_EXPIRES_AT = "expires_at"
+        const val KEY_USER_ID = "user_id"
+        const val KEY_USER_EMAIL = "user_email"
+        const val KEY_SELECTED_MODULE = "selected_module"
+    }
+}
+
+class SupabaseRestClient(
+    private val config: SupabaseProjectConfig,
+    private val sessionStore: SessionStore
+) {
+    constructor(baseUrl: String, anonKey: String, sessionStore: SessionStore) : this(
+        SupabaseProjectConfig(
+            moduleKey = "Custom",
+            appName = "Custom Supabase Project",
+            projectId = baseUrl.substringAfter("https://").substringBefore('.'),
+            baseUrl = baseUrl,
+            anonKey = anonKey,
+            source = "manual"
+        ),
+        sessionStore
+    )
+
+    val json: Json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+        encodeDefaults = false
+    }
+
+    private val mediaType = "application/json; charset=utf-8".toMediaType()
+    private val http = OkHttpClient.Builder()
+        .connectTimeout(25, TimeUnit.SECONDS)
+        .readTimeout(40, TimeUnit.SECONDS)
+        .writeTimeout(40, TimeUnit.SECONDS)
+        .build()
+
+    suspend fun signInWithPassword(email: String, password: String): AuthSessionResponse {
+        val body = JsonObject(
+            mapOf(
+                "email" to JsonPrimitive(email.trim()),
+                "password" to JsonPrimitive(password)
+            )
+        )
+        val text = execute(
+            path = "auth/v1/token",
+            method = "POST",
+            body = body,
+            query = listOf("grant_type" to "password"),
+            authenticated = false
+        )
+        return parseAuthSession(text)
+    }
+
+    suspend fun refreshSession(refreshToken: String): AuthSessionResponse {
+        val body = JsonObject(mapOf("refresh_token" to JsonPrimitive(refreshToken)))
+        val text = execute(
+            path = "auth/v1/token",
+            method = "POST",
+            body = body,
+            query = listOf("grant_type" to "refresh_token"),
+            authenticated = false
+        )
+        return parseAuthSession(text)
+    }
+
+    suspend fun getUser(): AuthUser {
+        val text = execute(path = "auth/v1/user", method = "GET", authenticated = true)
+        val obj = json.parseToJsonElement(text).jsonObject
+        return AuthUserDto(id = obj.stringValue("id"), email = obj.stringOrNull("email")).toDomain()
+    }
+
+    suspend fun signOut() {
+        runCatching {
+            execute(path = "auth/v1/logout", method = "POST", body = JsonObject(emptyMap()), authenticated = true)
+        }
+    }
+
+    suspend fun select(
+        table: String,
+        select: String = "*",
+        filters: List<Pair<String, String>> = emptyList(),
+        order: String? = null,
+        limit: Int? = null,
+        useServiceRole: Boolean = false
+    ): JsonArray {
+        val query = buildList {
+            add("select" to select)
+            addAll(filters)
+            if (!order.isNullOrBlank()) add("order" to order)
+            if (limit != null) add("limit" to limit.toString())
+        }
+        return parseArray(execute("rest/v1/$table", "GET", query = query, authenticated = true, useServiceRole = useServiceRole))
+    }
+
+    suspend fun insert(table: String, payload: JsonElement, returning: Boolean = true, useServiceRole: Boolean = false): JsonArray {
+        val prefer = if (returning) "return=representation" else "return=minimal"
+        val text = execute("rest/v1/$table", "POST", payload, authenticated = true, prefer = prefer, useServiceRole = useServiceRole)
+        return parseArray(text)
+    }
+
+    suspend fun upsert(table: String, payload: JsonElement, onConflict: String, useServiceRole: Boolean = false): JsonArray {
+        val prefer = "resolution=merge-duplicates,return=representation"
+        val text = execute(
+            path = "rest/v1/$table",
+            method = "POST",
+            body = payload,
+            query = listOf("on_conflict" to onConflict),
+            authenticated = true,
+            prefer = prefer,
+            useServiceRole = useServiceRole
+        )
+        return parseArray(text)
+    }
+
+    suspend fun patch(table: String, filters: List<Pair<String, String>>, payload: JsonObject, useServiceRole: Boolean = false): JsonArray {
+        val text = execute(
+            path = "rest/v1/$table",
+            method = "PATCH",
+            body = payload,
+            query = filters,
+            authenticated = true,
+            prefer = "return=representation",
+            useServiceRole = useServiceRole
+        )
+        return parseArray(text)
+    }
+
+    suspend fun delete(table: String, filters: List<Pair<String, String>>, useServiceRole: Boolean = false): JsonArray {
+        val text = execute(
+            path = "rest/v1/$table",
+            method = "DELETE",
+            query = filters,
+            authenticated = true,
+            prefer = "return=representation",
+            useServiceRole = useServiceRole
+        )
+        return parseArray(text)
+    }
+
+    private fun parseAuthSession(text: String): AuthSessionResponse {
+        val obj = json.parseToJsonElement(text).jsonObject
+        val user = (obj["user"] as? JsonObject)?.let {
+            AuthUserDto(id = it.stringValue("id"), email = it.stringOrNull("email"))
+        }
+        val token = obj.stringValue("access_token")
+        if (token.isBlank()) throw SupabaseException("Supabase sign-in returned no access token for ${config.appName}.")
+        return AuthSessionResponse(
+            accessToken = token,
+            refreshToken = obj.stringOrNull("refresh_token"),
+            expiresIn = obj["expires_in"]?.jsonPrimitive?.longOrNull ?: obj["expires_in"]?.jsonPrimitive?.contentOrNull?.toLongOrNull(),
+            tokenType = obj.stringOrNull("token_type"),
+            user = user
+        )
+    }
+
+    private fun parseArray(text: String): JsonArray {
+        if (text.isBlank()) return JsonArray(emptyList())
+        val element = json.parseToJsonElement(text)
+        return when (element) {
+            is JsonArray -> element
+            is JsonObject -> JsonArray(listOf(element))
+            JsonNull -> JsonArray(emptyList())
+            else -> JsonArray(emptyList())
+        }
+    }
+
+    private suspend fun execute(
+        path: String,
+        method: String,
+        body: JsonElement? = null,
+        query: List<Pair<String, String>> = emptyList(),
+        authenticated: Boolean,
+        prefer: String? = null,
+        useServiceRole: Boolean = false
+    ): String = withContext(Dispatchers.IO) {
+        val url = buildUrl(path, query)
+        val personalAdminRestMode = config.moduleKey == "Study" && path.trim('/').startsWith("rest/v1/")
+        val serviceKey = config.serviceRoleKey?.takeIf { (useServiceRole || personalAdminRestMode) && it.isNotBlank() }
+        val apiKey = serviceKey ?: config.anonKey
+        val requestBuilder = Request.Builder()
+            .url(url)
+            .addHeader("apikey", apiKey)
+            .addHeader("Accept", "application/json")
+            .addHeader("Content-Type", "application/json")
+
+        if (serviceKey != null) {
+            requestBuilder.addHeader("Authorization", "Bearer $serviceKey")
+        } else if (authenticated) {
+            val token = sessionStore.accessToken ?: throw SupabaseException("No active Supabase session for ${config.appName}. Please sign in again.")
+            requestBuilder.addHeader("Authorization", "Bearer $token")
+        }
+        if (!prefer.isNullOrBlank()) requestBuilder.addHeader("Prefer", prefer)
+
+        val requestBody = body?.toString()?.toRequestBody(mediaType)
+        when (method.uppercase()) {
+            "GET" -> requestBuilder.get()
+            "POST" -> requestBuilder.post(requestBody ?: "{}".toRequestBody(mediaType))
+            "PATCH" -> requestBuilder.patch(requestBody ?: "{}".toRequestBody(mediaType))
+            "DELETE" -> if (requestBody == null) requestBuilder.delete() else requestBuilder.delete(requestBody)
+            else -> throw SupabaseException("Unsupported method $method")
+        }
+
+        http.newCall(requestBuilder.build()).execute().use { response ->
+            val text = response.body?.string().orEmpty()
+            if (!response.isSuccessful) {
+                val readable = text.ifBlank { response.message }
+                val compactTarget = path.trim('/').removePrefix("rest/v1/")
+                val reason = when (response.code) {
+                    401, 403 -> "Permission blocked for $compactTarget. In v1.4 Study personal mode uses the configured admin key for REST calls; if this still appears, confirm the table exists and the key belongs to the same project."
+                    404 -> "Supabase table/view not found: $compactTarget. Run supabase/study_tracker_install.sql or the v1.4 patch in Supabase SQL Editor."
+                    else -> readable
+                }
+                throw SupabaseException("${config.appName}: ${method.uppercase()} $compactTarget failed (${response.code}): $reason", response.code)
+            }
+            text
+        }
+    }
+
+    private fun buildUrl(path: String, query: List<Pair<String, String>>): HttpUrl {
+        val builder = config.baseUrl.trimEnd('/').toHttpUrl().newBuilder()
+        path.trim('/').split('/').filter { it.isNotBlank() }.forEach { builder.addPathSegment(it) }
+        query.forEach { (key, value) -> builder.addQueryParameter(key, value) }
+        return builder.build()
+    }
+}
+
+fun todayIso(): String = LocalDate.now().format(DateTimeFormatter.ISO_DATE)
+fun nowIso(): String = Instant.now().toString()
+
+fun JsonObject.stringOrNull(key: String): String? = this[key]?.jsonPrimitive?.contentOrNull
+fun JsonObject.stringValue(key: String, fallback: String = ""): String = stringOrNull(key) ?: fallback
+fun JsonObject.booleanValue(key: String, fallback: Boolean = false): Boolean {
+    val primitive = this[key]?.jsonPrimitive ?: return fallback
+    return primitive.booleanOrNull ?: primitive.contentOrNull?.toBooleanStrictOrNull() ?: fallback
+}
+fun JsonObject.intOrNullValue(key: String): Int? = this[key]?.jsonPrimitive?.intOrNull ?: this[key]?.jsonPrimitive?.contentOrNull?.toIntOrNull()
+fun JsonObject.doubleOrNullValue(key: String): Double? = this[key]?.jsonPrimitive?.doubleOrNull ?: this[key]?.jsonPrimitive?.contentOrNull?.toDoubleOrNull()
+fun JsonObject.objectValue(key: String): JsonObject = this[key] as? JsonObject ?: JsonObject(emptyMap())
+
+fun durationToText(seconds: Int?): String {
+    if (seconds == null) return "--"
+    val h = seconds / 3600
+    val m = (seconds % 3600) / 60
+    val s = seconds % 60
+    return "%02d:%02d:%02d".format(h, m, s)
+}
+
+fun parseFlexibleDuration(value: String?): Int? {
+    val raw = value?.trim().orEmpty()
+    if (raw.isBlank()) return null
+    if (!raw.contains(":")) return raw.toIntOrNull()
+    val parts = raw.split(":").map { it.trim().toIntOrNull() ?: return null }
+    return when (parts.size) {
+        2 -> parts[0] * 60 + parts[1]
+        3 -> parts[0] * 3600 + parts[1] * 60 + parts[2]
+        else -> null
+    }
+}
