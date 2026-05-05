@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="app/src/main/res/drawable-nodpi/sam_logo_transparent.png" width="110" alt="Sam's Progress Tracker Logo" />
+  <img src="app/src/main/res/drawable-nodpi/sam_logo_transparent.png" width="110" height="110" alt="Sam's Progress Tracker Logo" />
 </p>
 
 <h1 align="center">Sam's Progress Tracker</h1>
@@ -30,38 +30,156 @@
 
 ## Preview
 
-> Add screenshots in the `screenshots/` folder using the exact file names shown below.
+The screenshots below use the original uploaded portrait ratio:
+
+```text
+Original screenshot size: 738 × 1600
+GitHub display size used here: width 230 × height 499
+Reason: keeps the phone screenshot clean, aligned, and not too large.
+```
+
+---
+
+## Home
 
 <table>
   <tr>
-    <td align="center"><b>Home</b></td>
-    <td align="center"><b>Today</b></td>
-    <td align="center"><b>Study</b></td>
+    <td align="center" width="50%">
+      <b>Home Overview</b><br/>
+      <img width="230" height="499" alt="Home overview" src="https://github.com/user-attachments/assets/3a4e5a61-a1fc-4105-b593-985619cceca3" />
+    </td>
+    <td align="center" width="50%">
+      <b>Home Dashboard State</b><br/>
+      <img width="230" height="499" alt="Home dashboard state" src="https://github.com/user-attachments/assets/f4875e7f-7823-475c-b42c-54dcb2daf75e" />
+    </td>
   </tr>
+</table>
+
+---
+
+## Today
+
+<table>
   <tr>
-    <td><img src="screenshots/01-home.png" width="260" alt="Home screen" /></td>
-    <td><img src="screenshots/02-today.png" width="260" alt="Today screen" /></td>
-    <td><img src="screenshots/03-study.png" width="260" alt="Study screen" /></td>
+    <td align="center">
+      <b>Today Tasks & Daily Flow</b><br/>
+      <img width="230" height="499" alt="Today screen" src="https://github.com/user-attachments/assets/3d27a984-3069-4cdf-9cbb-ad332fcfe3af" />
+    </td>
   </tr>
+</table>
+
+---
+
+## Study
+
+<table>
   <tr>
-    <td align="center"><b>Mistakes</b></td>
-    <td align="center"><b>Progress</b></td>
-    <td align="center"><b>How to Submit</b></td>
+    <td align="center" width="50%">
+      <b>Study Catalog</b><br/>
+      <img width="230" height="499" alt="Study catalog" src="https://github.com/user-attachments/assets/6fb4a8eb-8fa4-4481-8d7d-d96a5582c170" />
+    </td>
+    <td align="center" width="50%">
+      <b>Study Add / Item Flow</b><br/>
+      <img width="230" height="499" alt="Study add flow" src="https://github.com/user-attachments/assets/2b5be3b6-8e59-43a9-bb2c-e29c0018b387" />
+    </td>
   </tr>
+</table>
+
+---
+
+## Mistakes
+
+<table>
   <tr>
-    <td><img src="screenshots/04-mistakes.png" width="260" alt="Mistakes screen" /></td>
-    <td><img src="screenshots/05-progress.png" width="260" alt="Progress screen" /></td>
-    <td><img src="screenshots/06-how-to-submit.png" width="260" alt="How to submit screen" /></td>
+    <td align="center" width="50%">
+      <b>Mistake Book</b><br/>
+      <img width="230" height="499" alt="Mistake book screen" src="https://github.com/user-attachments/assets/99695636-9f43-406b-988e-b389b5cfde8c" />
+    </td>
+    <td align="center" width="50%">
+      <b>Mistake Detail / Review State</b><br/>
+      <img width="230" height="499" alt="Mistake detail screen" src="https://github.com/user-attachments/assets/88c9d0ef-3ce6-4e7f-a825-71b024758d6f" />
+    </td>
   </tr>
+</table>
+
+---
+
+## Progress
+
+<table>
   <tr>
-    <td align="center"><b>What Submitted</b></td>
-    <td align="center"><b>User Detail</b></td>
-    <td align="center"><b>Checkbox Flow</b></td>
+    <td align="center" width="33%">
+      <b>Progress Overview</b><br/>
+      <img width="210" height="455" alt="Progress overview" src="https://github.com/user-attachments/assets/ddf1155e-e704-46e7-80f9-28065782a2e2" />
+    </td>
+    <td align="center" width="33%">
+      <b>Charts & Trends</b><br/>
+      <img width="210" height="455" alt="Progress charts" src="https://github.com/user-attachments/assets/517035d4-d763-4dbf-80c7-ef2f7b7255dd" />
+    </td>
+    <td align="center" width="33%">
+      <b>Analytics Detail</b><br/>
+      <img width="210" height="455" alt="Progress analytics detail" src="https://github.com/user-attachments/assets/e22ca977-d857-49c9-8a44-308d6415a62b" />
+    </td>
   </tr>
+</table>
+
+---
+
+## How to Submit
+
+<table>
   <tr>
-    <td><img src="screenshots/07-what-submitted.png" width="260" alt="Submitted detail screen" /></td>
-    <td><img src="screenshots/08-user-detail.png" width="260" alt="User detail screen" /></td>
-    <td><img src="screenshots/09-checkbox.png" width="260" alt="Checkbox screen" /></td>
+    <td align="center">
+      <b>Submit Flow</b><br/>
+      <img width="230" height="499" alt="How to submit screen" src="https://github.com/user-attachments/assets/cc48f9e2-cf64-4b20-b98e-240e7c5a9863" />
+    </td>
+  </tr>
+</table>
+
+---
+
+## What Is Submitted
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <b>Submitted Activity</b><br/>
+      <img width="210" height="455" alt="Submitted activity screen" src="https://github.com/user-attachments/assets/aea2d9e1-8881-4fcb-89c9-32b1b06c57eb" />
+    </td>
+    <td align="center" width="33%">
+      <b>Submitted Detail</b><br/>
+      <img width="210" height="455" alt="Submitted detail screen" src="https://github.com/user-attachments/assets/b1b5d509-a324-44dd-b01b-5f50392871fe" />
+    </td>
+    <td align="center" width="33%">
+      <b>Submitted Test Context</b><br/>
+      <img width="210" height="455" alt="Submitted test context screen" src="https://github.com/user-attachments/assets/8c62c8b9-8ead-4f34-9c5f-78d81866cbd7" />
+    </td>
+  </tr>
+</table>
+
+---
+
+## User Detail
+
+<table>
+  <tr>
+    <td align="center">
+      <b>User Detail / Profile</b><br/>
+      <img width="230" height="499" alt="User detail screen" src="https://github.com/user-attachments/assets/4422a90b-6c5f-4d55-9bc1-91af453fd8ca" />
+    </td>
+  </tr>
+</table>
+
+---
+
+## Checkbox Flow
+
+<table>
+  <tr>
+    <td align="center">
+      <b>Daily Checkbox Completion</b><br/>
+      <img width="230" height="499" alt="Checkbox flow screen" src="https://github.com/user-attachments/assets/d9e6d2a0-5ec4-4b7a-af9c-4cc5ef857716" />
+    </td>
   </tr>
 </table>
 
@@ -82,7 +200,7 @@ The app helps track:
 - revision sessions
 - reading progress
 - missed questions
-- wrong/skipped/unseen questions
+- wrong, skipped, and unseen questions
 - mistake review status
 - submitted activity history
 - daily tasks
@@ -731,26 +849,30 @@ Then:
 
 ---
 
-## Screenshot File Names
+## Screenshot Size Guide
 
-Place screenshots here:
+All uploaded screenshots are portrait phone screenshots with this original size:
 
 ```text
-screenshots/
+Original width: 738 px
+Original height: 1600 px
+Aspect ratio: 0.46125
 ```
 
-Use these exact names:
+Recommended GitHub display sizes:
+
+| Use case | Width | Height | Best for |
+|---|---:|---:|---|
+| Single screenshot | 230 | 499 | One image in a row |
+| Two screenshots in one row | 230 | 499 | Side-by-side section |
+| Three screenshots in one row | 210 | 455 | Progress / submitted detail group |
+| Large feature preview | 260 | 563 | Hero screenshot |
+| Small compact preview | 180 | 390 | Dense README section |
+
+Formula used:
 
 ```text
-01-home.png
-02-today.png
-03-study.png
-04-mistakes.png
-05-progress.png
-06-how-to-submit.png
-07-what-submitted.png
-08-user-detail.png
-09-checkbox.png
+displayHeight = displayWidth × 1600 / 738
 ```
 
 ---
